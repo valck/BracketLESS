@@ -18,3 +18,9 @@ Usage
 After enabling BracketLESS as outlined above, the extension will try and 
 parse any .less file when saved and output an identically named CSS file 
 within the same directory.
+
+Change Log
+==========
+
+08-01-2013 Fix: Parser exception handling update
+02-12-2012 Initial commit
