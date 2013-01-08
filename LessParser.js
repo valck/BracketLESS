@@ -97,6 +97,8 @@ define(function (require, exports, module) {
 		 */
 		parseLessCode: function (lessCode) {
 		
+			try {
+		
 			var parser 			= new less.Parser(),
 				parserPromise 	= new $.Deferred();
 					
@@ -111,6 +113,18 @@ define(function (require, exports, module) {
 					parserPromise.resolve(cssCode);
 				}					 
 			});
+			
+			} catch(ex) {
+			
+				var msg = '';
+			
+				if(ex.message == '') {
+					msg = 'There was an unknown error processing the LESS file, check that all variables exist and try again.';
+				} else {
+					msg = ex.message;
+				}
+				parserPromise.reject(new LessParser.ParserError(msg));
+			}
 			
 			return parserPromise.promise();
 			
