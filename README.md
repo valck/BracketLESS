@@ -23,4 +23,5 @@ Change Log
 ==========
 
 08-01-2013 Fix: Parser exception handling update
+
 02-12-2012 Initial commit
