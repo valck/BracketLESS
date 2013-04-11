@@ -75,10 +75,10 @@ define(function (require, exports, module) {
     /* Adds an error message to the GUI */
     function _showErrorMessage(msg) {
      
-        var mainToolbar = $("#main-toolbar"),
+        var editorHolder = $("#editor-holder"),
             holder = $("<div></div>").addClass("bracketless-error").html("LESS Compilation Error: "),
             errorMsg = $("<span></span>").html(msg);
-            mainToolbar.after(holder.append(errorMsg));
+            editorHolder.before(holder.append(errorMsg));
         
         holder.slideDown(function(){EditorManager.resizeEditor(); });
         
@@ -135,7 +135,7 @@ define(function (require, exports, module) {
     /* Add the menu ability to enable / disable BracketLESS */
     CommandManager.register("Enable BracketLESS", BRACKETLESS_ENABLED, _handleEnableBracketLess);
     var menu = Menus.getMenu(Menus.AppMenuBar.VIEW_MENU);
-    menu.addMenuItem(BRACKETLESS_ENABLED, "", Menus.AFTER, "menu-view-sidebar");
+    menu.addMenuItem(BRACKETLESS_ENABLED, "", Menus.AFTER, "jslint.toggleEnabled");
 
     /* Turn ourself on if we've been turned on in another session */
     if(_pStore.getValue("enabled")) _handleEnableBracketLess();
