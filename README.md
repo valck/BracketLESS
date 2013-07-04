@@ -31,18 +31,26 @@ Change Log
 **Version 2**
 
 04-07-2013 - 2.0
+
 BracketLESS now uses a node.js process for parsing LESS files & uses an independent local version of LESS to Brackets
+
 Improved error reporting including line number & file name
+
 Full support for @import has now been added (fixes issue #2)
+
 Upgraded to use LESS 1.3.3
+
 
 **Version 1**
 
 11-04-2013 - 1.2
+
 Fix: Sprint 23 toolbar update (issue #2)
 
 08-01-2013 - 1.1
+
 Fix: Parser exception handling update
 
 02-12-2012 - 1.0
+
 Initial release
