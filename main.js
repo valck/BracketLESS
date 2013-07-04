@@ -53,30 +53,29 @@ define(function (require, exports, module) {
         _pStore = PreferencesManager.getPreferenceStorage(PREFERENCES_KEY),
         _errorTimeout = 10000;
     
-    
-    /* Style sheet loader */
+    // Style sheet loader
     function _loadStyles(relPath) {
         $("<link rel='stylesheet' type='text/css'></link>")
             .attr("href", require.toUrl("./" + relPath))
             .appendTo(document.head);
     }
     
-    /* Load our CSS */
+    // Load our CSS
     _loadStyles("bracketless.css");
     
-    /* Some LESS compilation options */
+    // Some LESS compilation options
     LessParser.options = { 
-        removeLineEndings: true, /* Remove line endings */ 
-        removeExcessWhitespace: true, /* Remove excess whitespace */ 
-        removeCSSComments: true, /* Remove comments */ 
-        insertLoveMessage: true, /* Insert the BracketLESS love message at the top of CSS files */
+        removeLineEndings: true, // Remove line endings
+        removeExcessWhitespace: true, // Remove excess whitespace 
+        removeCSSComments: true, // Remove comments
+        insertLoveMessage: true, // Insert the BracketLESS love message at the top of CSS files
     }
     
-    /* Adds an error message to the GUI */
+    // Adds an error message to the GUI
     function _showErrorMessage(msg) {
      
         var editorHolder = $("#editor-holder"),
-            holder = $("<div></div>").addClass("bracketless-error").html("LESS Compilation Error: "),
+            holder = $("<div></div>").addClass("bracketless-error").html("LESS Error"),
             errorMsg = $("<span></span>").html(msg);
             editorHolder.before(holder.append(errorMsg));
         
@@ -86,14 +85,14 @@ define(function (require, exports, module) {
         
     }
     
-    /* Removes all error messages that may stackup */
+    // Removes all error messages that may stackup
     function _hideErrorMessages() {
      
         $(".bracketless-error").slideUp(function() { EditorManager.resizeEditor(); });
         
     }
     
-    /* Run compilation on .less document save */
+    // Run compilation on .less document save
     $(DocumentManager).on("documentSaved", function (event, doc) {
         
         if(_bracketLessIsEnabled()) {
@@ -112,12 +111,12 @@ define(function (require, exports, module) {
 		
     });
     
-    /* Are we enabled or not? */
+    // Are we enabled or not?
     function _bracketLessIsEnabled() {     
         return _selfEnabled;        
     }
     
-    /* Toggle BracketLESS */
+    // Toggle BracketLESS
     function _handleEnableBracketLess() {
         
         if(!_bracketLessIsEnabled()){
@@ -132,12 +131,12 @@ define(function (require, exports, module) {
         PreferencesManager.savePreferences();        
     }
     
-    /* Add the menu ability to enable / disable BracketLESS */
+    // Add the menu ability to enable / disable BracketLESS
     CommandManager.register("Enable BracketLESS", BRACKETLESS_ENABLED, _handleEnableBracketLess);
     var menu = Menus.getMenu(Menus.AppMenuBar.VIEW_MENU);
     menu.addMenuItem(BRACKETLESS_ENABLED, "", Menus.AFTER, "jslint.toggleEnabled");
 
-    /* Turn ourself on if we've been turned on in another session */
+    // Turn ourself on if we've been turned on in another session
     if(_pStore.getValue("enabled")) _handleEnableBracketLess();
     
 
