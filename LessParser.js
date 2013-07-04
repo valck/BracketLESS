@@ -263,11 +263,11 @@ define(function (require, exports, module) {
                     _setError(LESS_PARSER_ERROR, msg);
                     return;
                 } else if(obj.code != undefined) {
-                    _setError(FILE_ERROR, '<b>:</b> ' + FileUtils.getFileErrorString(obj.code) + '[3]');
+                    _setError(FILE_ERROR, '<b>:</b> ' + FileUtils.getFileErrorString(obj.code) + ' [3]');
                     return;
                 }
             } else if(objType === "[object String]") {                 
-                _setError(UNKNOWN_ERROR, obj + '[4]');  
+                _setError(UNKNOWN_ERROR, '<b>:</b> ' + obj + ' [4]');  
                 return;
             }
             
