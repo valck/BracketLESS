@@ -19,9 +19,30 @@ After enabling BracketLESS as outlined above, the extension will try and
 parse any .less file when saved and output an identically named CSS file 
 within the same directory.
 
+Road Map
+========
+
+* Refactor & dialogue system to allow toggling of components (love text, minification, etc)  v2.1
+* Better directory structure (issue #4) v2.2
+
 Change Log
 ==========
 
-08-01-2013 Fix: Parser exception handling update
+**Version 2**
 
-02-12-2012 Initial commit
+04-07-2013 - 2.0
+BracketLESS now uses a node.js process for parsing LESS files & uses an independent local version of LESS to Brackets
+Improved error reporting including line number & file name
+Full support for @import has now been added (fixes issue #2)
+Upgraded to use LESS 1.3.3
+
+**Version 1**
+
+11-04-2013 - 1.2
+Fix: Sprint 23 toolbar update (issue #2)
+
+08-01-2013 - 1.1
+Fix: Parser exception handling update
+
+02-12-2012 - 1.0
+Initial release
