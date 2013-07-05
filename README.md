@@ -47,6 +47,7 @@ Change Log
 * Upgraded to use LESS 1.3.3
 * Added command 'Save as LESS' on the file menu & 'CTRL + Shift + S' as a keyboard shortcut (this still works with BracketLESS disabled)
 * Renamed the view menu option from 'Enable BracketLESS' to 'Auto-parse LESS to CSS'.
+* Added save success notifications & added icons, lowered default notification timeout
 
 **Version 1**
 

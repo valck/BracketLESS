@@ -52,7 +52,7 @@ define(function (require, exports, module) {
 		COMMAND_ID      = "com.adobe.brackets.bracketless.parseCurrentDocument",
         _selfEnabled = false,
         _pStore = PreferencesManager.getPreferenceStorage(PREFERENCES_KEY),
-        _errorTimeout = 10000;
+        _errorTimeout = 5000;
     
     // Style sheet loader
     function _loadStyles(relPath) {
@@ -73,12 +73,14 @@ define(function (require, exports, module) {
     }
     
     // Adds an error message to the GUI
-    function _showErrorMessage(msg) {
+    function _showErrorMessage(msg, type) {
      
+		if(!type) type = 'error';
+	 
         var editorHolder = $("#editor-holder"),
-            holder = $("<div></div>").addClass("bracketless-error").html("LESS Error"),
-            errorMsg = $("<span></span>").html(msg);
-            editorHolder.before(holder.append(errorMsg));
+            holder = $("<div></div>").addClass("bracketless-msg").addClass(type).html("<span class=\"icon\"></span>"),
+            errorMsg = $("<span></span>").html("<b>LESS " + type.charAt(0).toUpperCase() + type.slice(1) + "</b>" + msg);
+            editorHolder.before(holder.append(errorMsg).append($('<br style="clear:both; float: none;"/>')));
         
         holder.slideDown(function(){EditorManager.resizeEditor(); });
         
@@ -89,7 +91,7 @@ define(function (require, exports, module) {
     // Removes all error messages that may stackup
     function _hideErrorMessages() {
      
-        $(".bracketless-error").slideUp(function() { EditorManager.resizeEditor(); });
+        $(".bracketless-msg").slideUp(function() { EditorManager.resizeEditor(); });
         
     }
     
@@ -110,7 +112,7 @@ define(function (require, exports, module) {
         if(fExt === "less") {	
             var cssSavePath = file.fullPath.replace(".less", ".css");                
             LessParser.parseLessFile(file, cssSavePath)
-                .done(function (response) { _hideErrorMessages(); })
+                .done(function (response) { _hideErrorMessages(); _showErrorMessage('<b>:</b> ' + file.name.replace(".less", ".css") + ' saved', 'success');})
                 .fail(function (err) { _showErrorMessage(err.Text); });
         } else {		
 			_showErrorMessage('<b>:</b> ' + file.name + ' is not a LESS file');
@@ -119,14 +121,18 @@ define(function (require, exports, module) {
 	}
 	
 	// Parse current editor doc
-	function parseCurrentDocument () {
+	function saveAndParseCurrentDocument () {
 	
 		var editor = EditorManager.getFocusedEditor();
         if (!editor) {
             return;
         }		
 		
-		parseLESSFile(editor.document.file);	
+		// editor.document.isDirty is reporting false here??? hence no check
+		CommandManager.execute("file.save").done(function () {		
+			parseLESSFile(editor.document.file);	
+		});
+		
     }
 	
     // Are we enabled or not?
@@ -155,7 +161,7 @@ define(function (require, exports, module) {
     menu.addMenuItem(BRACKETLESS_ENABLED, "", Menus.AFTER, "jslint.toggleEnabled");
 	
 	// Add the ability to run BracketLESS via shortcut
-	CommandManager.register("Save as LESS", COMMAND_ID, parseCurrentDocument);
+	CommandManager.register("Save as LESS", COMMAND_ID, saveAndParseCurrentDocument);
 	var menu = Menus.getMenu(Menus.AppMenuBar.FILE_MENU);
 	menu.addMenuItem(COMMAND_ID, [{key: "Ctrl-Shift-S", platform: "win"},
                                   {key: "Ctrl-Shift-S", platform: "mac"}], Menus.AFTER, Commands.FILE_SAVE);

@@ -1,19 +1,33 @@
-.bracketless-error { 
+//@import 'tesd'; 
+.bracketless-msg {
     
-    /*position: absolute;*/
     width: 100%;
-    padding: 10px 13px;
-    background-color: red;
+    padding: 9px 13px;
     color: #fff;
-    /*top: 36px;*/
     z-index: 18;
     font-weight:bold;
     display: none;
+    line-height: 19px;
     
-    span {
-     
-        font-weight: normal;
-        
+    span { font-weight: normal; float: left; }
+    .icon { width: 19px; height: 18px; display: block; margin-right: 8px;  }
+    
+    &.error { 
+        background-color: red; 
+        .icon { 
+            background: url(icons.png) no-repeat 0px -20px; 
+        }
+    }    
+    &.success { 
+        background-color: #01ae01; 
+        .icon { 
+            background: url(icons.png) no-repeat -1px 0px; 
+        }
     }
-    
+    &.info { 
+        background-color: #1084c5; 
+        .icon { 
+            background: url(icons.png) no-repeat -1px -41px; 
+        }
+    }
 }
