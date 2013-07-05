@@ -185,7 +185,7 @@ define(function (require, exports, module) {
 	 
         var editorHolder = $("#editor-holder"),
             holder = $("<div></div>").addClass("bracketless-msg").addClass(type).html("<span class=\"icon\"></span>"),
-            errorMsg = $("<span class=\"msg\"></span>").html("<b>LESS " + type.charAt(0).toUpperCase() + type.slice(1) + "</b>").append(msg);
+            errorMsg = $("<span class=\"msg\"></span>").html("<b>LESS</b>").append(msg);
 			
             editorHolder.before(holder.append(errorMsg).append($('<br style="clear:both; float: none;"/>')));
         
@@ -217,9 +217,10 @@ define(function (require, exports, module) {
 		var fExt = file.name.split(".").pop();		
                 
         if(fExt === "less") {	
+			var cssFilename = file.name.replace(".less", ".css");          
             var cssSavePath = file.fullPath.replace(".less", ".css");                
             LessParser.parseLessFile(file, cssSavePath)
-                .done(function (response) { _hideErrorMessages(); _showErrorMessage('<b>:</b> ' + file.name.replace(".less", ".css") + ' saved', 'success');})
+                .done(function (response) { _hideErrorMessages(); _showErrorMessage('<b>:</b> ' + cssFilename.charAt(0).toUpperCase() + cssFilename.slice(1) + ' saved', 'success');})
                 .fail(function (err) { _showErrorMessage(err.Text); });
         } else {		
 			_showErrorMessage('<b>:</b> ' + file.name + ' is not a LESS file');

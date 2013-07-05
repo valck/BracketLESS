@@ -256,7 +256,7 @@ define(function (require, exports, module) {
             if(objType === "[object Object]") {                
                 if(obj.type != undefined) { 
 				
-					var msg = ' <b>[' + obj.type + ']:</b> ' + obj.message.charAt(0).toUpperCase() + obj.message.slice(1);
+					var msg = ' <b>:</b> ' + obj.message.charAt(0).toUpperCase() + obj.message.slice(1);
 					msg += (obj.line && obj.type != 'Parse') ? ' on line ' + obj.line : '';
 					msg += (obj.filename) ? ' in ' + obj.filename : '';
 				
