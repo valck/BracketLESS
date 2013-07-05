@@ -9,8 +9,15 @@
     display: none;
     line-height: 19px;
     
-    span { font-weight: normal; float: left; }
-    .icon { width: 19px; height: 18px; display: block; margin-right: 8px;  }
+    span { font-weight: normal; }
+    .icon, msg { float: left; };
+    .icon { width: 19px; height: 18px; display: block; margin-right: 8px; }
+    
+    a {
+        &:link, &:visited { 
+            color: #ccc;   
+        }    
+    }
     
     &.error { 
         background-color: red; 

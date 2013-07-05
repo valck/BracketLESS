@@ -45,14 +45,119 @@ define(function (require, exports, module) {
         PreferencesManager  = brackets.getModule("preferences/PreferencesManager"),
         Menus               = brackets.getModule("command/Menus"),
         FileUtils	        = brackets.getModule("file/FileUtils"),
-		LessParser			= require("LessParser").LessParser;
+		LessParser			= require("LessParser").LessParser,
+		NodeConnection      = brackets.getModule("utils/NodeConnection"),
+		AppInit       		= brackets.getModule("utils/AppInit"),
+        ExtensionUtils 		= brackets.getModule("utils/ExtensionUtils"),
+        NativeApp               = brackets.getModule("utils/NativeApp");
+	
+	// Helper function that chains a series of promise-returning
+    // functions together via their done callbacks.
+    function chain() {
+        var functions = Array.prototype.slice.call(arguments, 0);
+        if (functions.length > 0) {
+            var firstFunction = functions.shift();
+            var firstPromise = firstFunction.call();
+            firstPromise.done(function () {
+                chain.apply(null, functions);
+            });
+        }
+    }
     
     var PREFERENCES_KEY = "com.adobe.brackets.bracketless",
         BRACKETLESS_ENABLED = "bracketless.enabled", 
 		COMMAND_ID      = "com.adobe.brackets.bracketless.parseCurrentDocument",
         _selfEnabled = false,
         _pStore = PreferencesManager.getPreferenceStorage(PREFERENCES_KEY),
-        _errorTimeout = 5000;
+        _errorTimeout = 5000,
+		_nodeConnection,
+		CURRENT_VERSION_ID = "tag:github.com,2008:Repository/6970826/v1.2",
+		GIT_HUB_RELEASE_URL = "https://github.com/olsgreen/BracketLESS/releases.atom";
+		
+	// Helper function that chains a series of promise-returning
+    // functions together via their done callbacks.
+    function chain() {
+        var functions = Array.prototype.slice.call(arguments, 0);
+        if (functions.length > 0) {
+            var firstFunction = functions.shift();
+            var firstPromise = firstFunction.call();
+            firstPromise.done(function () {
+                chain.apply(null, functions);
+            });
+        }
+    }
+	
+	AppInit.appReady(function () {
+	
+        // Create a new node connection. Requires the following extension:
+        _nodeConnection = new NodeConnection();
+        
+        // Every step of communicating with node is asynchronous, and is
+        // handled through jQuery promises. To make things simple, we
+        // construct a series of helper functions and then chain their
+        // done handlers together. Each helper function registers a fail
+        // handler with its promise to report any errors along the way.
+        
+        
+        // Helper function to connect to node
+        function connect() {
+            var connectionPromise = _nodeConnection.connect(true);
+            connectionPromise.fail(function () {
+                console.error("[bracketLESS] failed to connect to node");
+            });
+            return connectionPromise;
+        }
+        
+        // Helper function that loads our domain into the node server
+        function loadBracketLessDomain() {
+            var path = ExtensionUtils.getModulePath(module, "node/BracketLess");
+            var loadPromise = _nodeConnection.loadDomains([path], true);
+            loadPromise.fail(function () {
+                console.log("[bracketLESS] failed to load domain");
+            });
+            return loadPromise;
+        }
+
+        // Call all the helper functions in order
+        chain(connect, loadBracketLessDomain, checkForUpdate);
+        
+    });
+	
+	function checkForUpdate() {
+		
+		var updatePromise = _nodeConnection.domains.bracketless.checkForUpdate(GIT_HUB_RELEASE_URL, CURRENT_VERSION_ID)
+			.done(function(response) {
+				
+				/*console.log(response);
+				//console.log(response.currentVersion, CURRENT_VERSION_ID);
+				
+				if(response.version.currentVersion != null && response.version.currentVersion != CURRENT_VERSION_ID) {
+				
+					_showErrorMessage("There is a new version of BracketLESS available ("+ response.version.humanVersion +"). <a href=\"\">Click here to install it.</a>", 'info')
+				
+				}*/
+					
+			}).fail(function(response) {
+			
+			//Shouldn't be here doing this!!!!!
+			
+				if(response.version.current != null && response.version.current != CURRENT_VERSION_ID) {
+				
+					var link = $("<a target=\"_blank\" href=\"javascript:void(0)\">Get it now ></a>"),
+						msg = $("<span></span>").html("<b>:</b> There is a new version ("+ response.version.readable +") of BracketLESS available. ").append(link);
+
+					link.click(function() {						
+						NativeApp.openURLInDefaultBrowser(response.version.releaseUrl);					
+					});
+				
+					_showErrorMessage(msg, 'info', 20000);
+				
+				}
+			});
+					
+			return updatePromise;
+		
+	}
     
     // Style sheet loader
     function _loadStyles(relPath) {
@@ -73,18 +178,20 @@ define(function (require, exports, module) {
     }
     
     // Adds an error message to the GUI
-    function _showErrorMessage(msg, type) {
+    function _showErrorMessage(msg, type, delay) {
      
 		if(!type) type = 'error';
+		if(!delay) delay = _errorTimeout;
 	 
         var editorHolder = $("#editor-holder"),
             holder = $("<div></div>").addClass("bracketless-msg").addClass(type).html("<span class=\"icon\"></span>"),
-            errorMsg = $("<span></span>").html("<b>LESS " + type.charAt(0).toUpperCase() + type.slice(1) + "</b>" + msg);
+            errorMsg = $("<span class=\"msg\"></span>").html("<b>LESS " + type.charAt(0).toUpperCase() + type.slice(1) + "</b>").append(msg);
+			
             editorHolder.before(holder.append(errorMsg).append($('<br style="clear:both; float: none;"/>')));
         
         holder.slideDown(function(){EditorManager.resizeEditor(); });
         
-        setTimeout(function(){ $(holder).slideUp(function(){ $(this).remove(); EditorManager.resizeEditor(); });  }, _errorTimeout);
+        setTimeout(function(){ $(holder).slideUp(function(){ $(this).remove(); EditorManager.resizeEditor(); });  }, delay);
         
     }
     

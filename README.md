@@ -32,8 +32,9 @@ within a CSS file of the same name in the same directory as the current LESS fil
 Road Map
 ========
 
-* Refactor & dialogue system to allow toggling of components (love text, minification, etc)  v2.1
-* Better directory structure (issue #4) v2.2
+* Tests, tests, tests v2.1
+* Refactor & dialogue system to allow toggling of components (love text, minification, etc)  v2.2
+* Better directory structure (issue #4) v2.3
 
 Change Log
 ==========
@@ -48,6 +49,7 @@ Change Log
 * Added command 'Save as LESS' on the file menu & 'CTRL + Shift + S' as a keyboard shortcut (this still works with BracketLESS disabled)
 * Renamed the view menu option from 'Enable BracketLESS' to 'Auto-parse LESS to CSS'.
 * Added save success notifications & added icons, lowered default notification timeout
+* Added update notifications
 
 **Version 1**
 
