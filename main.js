@@ -49,6 +49,7 @@ define(function (require, exports, module) {
     
     var PREFERENCES_KEY = "com.adobe.brackets.bracketless",
         BRACKETLESS_ENABLED = "bracketless.enabled", 
+		COMMAND_ID      = "com.adobe.brackets.bracketless.parseCurrentDocument",
         _selfEnabled = false,
         _pStore = PreferencesManager.getPreferenceStorage(PREFERENCES_KEY),
         _errorTimeout = 10000;
@@ -95,22 +96,39 @@ define(function (require, exports, module) {
     // Run compilation on .less document save
     $(DocumentManager).on("documentSaved", function (event, doc) {
         
-        if(_bracketLessIsEnabled()) {
-            
-            var fExt = doc.file.name.split(".").pop();		
-                
-            if(fExt === "less") {	
-                var cssSavePath = doc.file.fullPath.replace(".less", ".css");
-                
-                LessParser.parseLessFile(doc.file, cssSavePath)
-                    .done(function (response) { _hideErrorMessages(); })
-                    .fail(function (err) { _showErrorMessage(err.Text); console.log(err); });
-            }
-            
+        if(_bracketLessIsEnabled() && doc.file.name.split(".").pop() === 'less') {            
+            parseLESSFile(doc.file);            
         }
 		
     });
-    
+	
+	// Parse a file
+	function parseLESSFile (file) {
+	
+		var fExt = file.name.split(".").pop();		
+                
+        if(fExt === "less") {	
+            var cssSavePath = file.fullPath.replace(".less", ".css");                
+            LessParser.parseLessFile(file, cssSavePath)
+                .done(function (response) { _hideErrorMessages(); })
+                .fail(function (err) { _showErrorMessage(err.Text); });
+        } else {		
+			_showErrorMessage('<b>:</b> ' + file.name + ' is not a LESS file');
+		}
+	
+	}
+	
+	// Parse current editor doc
+	function parseCurrentDocument () {
+	
+		var editor = EditorManager.getFocusedEditor();
+        if (!editor) {
+            return;
+        }		
+		
+		parseLESSFile(editor.document.file);	
+    }
+	
     // Are we enabled or not?
     function _bracketLessIsEnabled() {     
         return _selfEnabled;        
@@ -132,9 +150,15 @@ define(function (require, exports, module) {
     }
     
     // Add the menu ability to enable / disable BracketLESS
-    CommandManager.register("Enable BracketLESS", BRACKETLESS_ENABLED, _handleEnableBracketLess);
+    CommandManager.register("Auto-parse LESS to CSS", BRACKETLESS_ENABLED, _handleEnableBracketLess);
     var menu = Menus.getMenu(Menus.AppMenuBar.VIEW_MENU);
     menu.addMenuItem(BRACKETLESS_ENABLED, "", Menus.AFTER, "jslint.toggleEnabled");
+	
+	// Add the ability to run BracketLESS via shortcut
+	CommandManager.register("Save as LESS", COMMAND_ID, parseCurrentDocument);
+	var menu = Menus.getMenu(Menus.AppMenuBar.FILE_MENU);
+	menu.addMenuItem(COMMAND_ID, [{key: "Ctrl-Shift-S", platform: "win"},
+                                  {key: "Ctrl-Shift-S", platform: "mac"}], Menus.AFTER, Commands.FILE_SAVE);
 
     // Turn ourself on if we've been turned on in another session
     if(_pStore.getValue("enabled")) _handleEnableBracketLess();

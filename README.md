@@ -8,6 +8,7 @@ Installation
 
 1. Find your extensions folder by going to "Help -> Show Extensions Folder"
 2. Extract the .zip to your Brackets extension directory
+
 3. Start Brackets and enable the extension from the 'View' menu
 4. Create a new LESS file, add some LESS code and save...
 5. Voilà, you will see a CSS file of the same name in the  same directory
@@ -15,9 +16,20 @@ Installation
 Usage
 =====
 
-After enabling BracketLESS as outlined above, the extension will try and 
-parse any .less file when saved and output an identically named CSS file 
-within the same directory.
+After installing BracketLESS as outlined above, you can use the extension using
+either of the methods below:
+
+**Enable auto-parsing of LESS files to CSS**
+BracketLESS can automatically parse and save LESS files to CSS when you save them. 
+To enable this navigate to the 'View' menu from the top menu bar and select 
+'Auto-parse LESS to CSS', now everytime you save a LESS file BracketLESS will parse 
+the it and save the ouput within a CSS file of the same name in the same directory.
+
+**Manual parsing**
+You can also use the 'Save as LESS' option on the file menu or the keyboard 
+shortcut 'CTRL + Shift + S' to parse and save the current file as LESS. 
+This will still work even with auto-parsing disabled and will save the ouput 
+within a CSS file of the same name in the same directory as the current LESS file.
 
 Road Map
 ========
@@ -35,6 +47,8 @@ Change Log
 * Improved error reporting including line number & file name
 * Full support for @import has now been added (fixes issue #2)
 * Upgraded to use LESS 1.3.3
+* Added command 'Save as LESS' on the file menu & 'CTRL + Shift + S' as a keyboard shortcut (this still works with BracketLESS disabled)
+* Renamed the view menu option from 'Enable BracketLESS' to 'Auto-parse LESS to CSS'.
 
 **Version 1**
 
