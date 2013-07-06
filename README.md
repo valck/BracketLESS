@@ -9,12 +9,12 @@ An 'on save' LESS compiler extension for Adobe Brackets.
 After installing BracketLESS as outlined above, you can use the extension using
 either of the methods below:
 
-####Enable auto-parsing of LESS files to CSS####
+####1. Enable auto-parsing of LESS files to CSS####
 BracketLESS can automatically parse and save LESS files to CSS when you save them. 
 To enable this navigate to the 'View' menu from the top menu bar and select 
 'Auto-parse LESS to CSS', now everytime you save a LESS file BracketLESS will parse it.
 
-####Manual parsing####
+####2. Manual parsing####
 You can also use the 'Save as LESS' option on the file menu or the keyboard 
 shortcut 'CTRL + Shift + S' to parse and save the current file as LESS. 
 This will still work even with auto-parsing disabled.
@@ -22,11 +22,11 @@ This will still work even with auto-parsing disabled.
 ###Where do the file get outputted?###
 BracketLESS will save resulting CSS files by sensing what it determines best for your setup:
 
-####Default output location####
+####1. Default output location####
 By default, BracketLESS will save the CSS file in the same folder as the source LESS file, 
 unless using the directory structure outlined below.
 
-####Using a /x/less -> /x/css directory structure####
+####2. Using a /x/less -> /x/css directory structure####
 If you use a /x/less -> /x/css directory structure, it will abide by the structure and save any
 generated CSS files within the /x/css directory. As an example, let's say I have a project named 
 'test' with the following directory structure:
