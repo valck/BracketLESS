@@ -34,8 +34,7 @@
  *
  */
 
-define(function (require, exports, module) {
-    
+define(function (require, exports, module) {    
     'use strict';
 
     var DocumentManager     = brackets.getModule("document/DocumentManager"),
@@ -45,6 +44,7 @@ define(function (require, exports, module) {
         PreferencesManager  = brackets.getModule("preferences/PreferencesManager"),
         Menus               = brackets.getModule("command/Menus"),
         FileUtils	        = brackets.getModule("file/FileUtils"),
+		NativeFileSystem    = brackets.getModule("file/NativeFileSystem").NativeFileSystem,
 		LessParser			= require("LessParser").LessParser,
 		NodeConnection      = brackets.getModule("utils/NodeConnection"),
 		AppInit       		= brackets.getModule("utils/AppInit"),
@@ -213,15 +213,40 @@ define(function (require, exports, module) {
 	
 	// Parse a file
 	function parseLESSFile (file) {
+		
+		var filePath, cssFilename, cssSavePath;
+		
+		function doParse(file, savePath) {
+			LessParser.parseLessFile(file, savePath)
+				.done(function (response) { _hideErrorMessages(); _showErrorMessage('<b>:</b> ' + cssFilename.charAt(0).toUpperCase() + cssFilename.slice(1) + ' saved', 'success');})
+				.fail(function (err) { _showErrorMessage(err.Text); });
+		}
 	
 		var fExt = file.name.split(".").pop();		
                 
         if(fExt === "less") {	
-			var cssFilename = file.name.replace(".less", ".css");          
-            var cssSavePath = file.fullPath.replace(".less", ".css");                
-            LessParser.parseLessFile(file, cssSavePath)
-                .done(function (response) { _hideErrorMessages(); _showErrorMessage('<b>:</b> ' + cssFilename.charAt(0).toUpperCase() + cssFilename.slice(1) + ' saved', 'success');})
-                .fail(function (err) { _showErrorMessage(err.Text); });
+		
+			filePath = FileUtils.convertWindowsPathToUnixPath(file.fullPath.replace(file.name, '')),
+			cssFilename = file.name.replace(".less", ".css"),        
+			cssSavePath = file.fullPath.replace(".less", ".css"); 
+			
+			// We check to see whether we're using the /x/less -> /x/css folder structure
+			// if we are we save the folder in the coresponding css folder, otherwise we save in
+			// the same folder as the less file.
+			if(FileUtils.canonicalizeFolderPath(filePath).split('/').pop().toLowerCase() === 'less') {
+			
+				var cssPathToCheck = FileUtils.canonicalizeFolderPath(filePath).substr(0, FileUtils.canonicalizeFolderPath(filePath).length - 4) + 'css';
+				
+				NativeFileSystem.resolveNativeFileSystemPath(cssPathToCheck 
+                                 , function(entry) { 
+									doParse(file, cssPathToCheck + '/' + cssFilename);
+								}
+                                 , function(err) {
+									doParse(file, cssSavePath);
+								 });
+				
+			}
+			
         } else {		
 			_showErrorMessage('<b>:</b> ' + file.name + ' is not a LESS file');
 		}
