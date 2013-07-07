@@ -1,0 +1,12 @@
+?{
+    "name": "olsgreen.bracketless",
+    "title": "BracketLESS",
+    "description": "LESS compiler extension for Adobe Brackets",
+    "homepage": "https://github.com/olsgreen/BracketLESS",
+    "version": "2.0.0",
+    "author": "Oliver Green <green2go@gmail.com> (http://olsgreen.com)",
+    "license": "MIT",
+    "engines": {
+        "brackets": ">=0.24.0"
+    }
+}
