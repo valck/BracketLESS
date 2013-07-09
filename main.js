@@ -232,20 +232,17 @@ define(function (require, exports, module) {
 			
 			// We check to see whether we're using the /x/less -> /x/css folder structure
 			// if we are we save the folder in the coresponding css folder, otherwise we save in
-			// the same folder as the less file.
-			if(FileUtils.canonicalizeFolderPath(filePath).split('/').pop().toLowerCase() === 'less') {
+			// the same folder as the less file.		
 			
-				var cssPathToCheck = FileUtils.canonicalizeFolderPath(filePath).substr(0, FileUtils.canonicalizeFolderPath(filePath).length - 4) + 'css';
+			var cssPathToCheck = FileUtils.canonicalizeFolderPath(filePath).substr(0, FileUtils.canonicalizeFolderPath(filePath).length - 4) + 'css';
 				
-				NativeFileSystem.resolveNativeFileSystemPath(cssPathToCheck 
-                                 , function(entry) { 
-									doParse(file, cssPathToCheck + '/' + cssFilename);
-								}
-                                 , function(err) {
-									doParse(file, cssSavePath);
-								 });
-				
-			}
+			NativeFileSystem.resolveNativeFileSystemPath(cssPathToCheck 
+                            , function(entry) { 
+								doParse(file, cssPathToCheck + '/' + cssFilename);
+							}
+                            , function(err) {
+								doParse(file, cssSavePath);
+							 });
 			
         } else {		
 			_showErrorMessage('<b>:</b> ' + file.name + ' is not a LESS file');
