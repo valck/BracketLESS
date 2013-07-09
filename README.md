@@ -16,7 +16,7 @@ To enable this navigate to the 'View' menu from the top menu bar and select
 
 ####Manual parsing####
 You can also use the 'Save as LESS' option on the file menu or the keyboard 
-shortcut 'CTRL + Shift + S' to parse and save the current file as LESS. 
+shortcut 'CTRL + Shift + A' to parse and save the current file as LESS. 
 This will still work even with auto-parsing disabled.
 
 ##Where do the file get outputted?##
@@ -54,6 +54,7 @@ generated CSS files within the /x/css directory. As an example, let's say I have
 ##Road Map##
 * Tests, tests, tests v2.0.1
 * Refactor & dialogue system to allow toggling of components (love text, minification, etc)  v2.1
+* SASS Support
 
 ##Change Log##
 
@@ -63,7 +64,7 @@ generated CSS files within the /x/css directory. As an example, let's say I have
 * BracketLESS now uses a node.js process for parsing LESS files & uses an independent local version of LESS to Brackets
 * Improved error reporting including line number & file name
 * Full support for @import has now been added (fixes issue #2)
-* Added command 'Save as LESS' on the file menu & 'CTRL + Shift + S' as a keyboard shortcut (this still works with BracketLESS disabled)
+* Added command 'Save as LESS' on the file menu & 'CTRL + Shift + A' as a keyboard shortcut (this still works with BracketLESS disabled)
 * Renamed the view menu option from 'Enable BracketLESS' to 'Auto-parse LESS to CSS'.
 * Added save success notifications & added icons, lowered default notification timeout
 * Added update notifications

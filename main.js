@@ -293,8 +293,8 @@ define(function (require, exports, module) {
 	// Add the ability to run BracketLESS via shortcut
 	CommandManager.register("Save as LESS", COMMAND_ID, saveAndParseCurrentDocument);
 	var menu = Menus.getMenu(Menus.AppMenuBar.FILE_MENU);
-	menu.addMenuItem(COMMAND_ID, [{key: "Ctrl-Shift-S", platform: "win"},
-                                  {key: "Ctrl-Shift-S", platform: "mac"}], Menus.AFTER, Commands.FILE_SAVE);
+	menu.addMenuItem(COMMAND_ID, [{key: "Ctrl-Shift-A", platform: "win"},
+                                  {key: "Ctrl-Shift-A", platform: "mac"}], Menus.AFTER, Commands.FILE_SAVE);
 
     // Turn ourself on if we've been turned on in another session
     if(_pStore.getValue("enabled")) _handleEnableBracketLess();
