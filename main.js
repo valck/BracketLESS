@@ -104,8 +104,7 @@ define(function (require, exports, module) {
                 
             if(fExt === "less") {
                 if(_bracketLessDotDotSlashCSSIsEnabled()) {	
-                    var cssSavePath = doc.file.fullPath.replace(".less", ".css").replace('/less/', '/css/');
-                    console.log(cssSavePath);
+                    var cssSavePath = doc.file.fullPath.replace(".less", ".css").replace('/source/', '/deploy/').replace('/less/', '/css/');
                 }
                 else {
                     var cssSavePath = doc.file.fullPath.replace(".less", ".css");
