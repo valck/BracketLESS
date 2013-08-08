@@ -48,8 +48,10 @@ define(function (require, exports, module) {
 		LessParser			= require("LessParser").LessParser;
     
     var PREFERENCES_KEY = "com.adobe.brackets.bracketless",
-        BRACKETLESS_ENABLED = "bracketless.enabled", 
+        BRACKETLESS_ENABLED = "bracketless.enabled",
+        BRACKETLESS_DOTDOTSLASH_ENABLED = "bracketless.dotdotslash",
         _selfEnabled = false,
+        _dotDotSlashEnable = false,
         _pStore = PreferencesManager.getPreferenceStorage(PREFERENCES_KEY),
         _errorTimeout = 10000;
     
@@ -100,8 +102,14 @@ define(function (require, exports, module) {
             
             var fExt = doc.file.name.split(".").pop();		
                 
-            if(fExt === "less") {	
-                var cssSavePath = doc.file.fullPath.replace(".less", ".css");
+            if(fExt === "less") {
+                if(_bracketLessDotDotSlashCSSIsEnabled()) {	
+                    var cssSavePath = doc.file.fullPath.replace(".less", ".css").replace('/less/', '/css/');
+                    console.log(cssSavePath);
+                }
+                else {
+                    var cssSavePath = doc.file.fullPath.replace(".less", ".css");
+                }
                 
                 LessParser.parseLessFile(doc.file, cssSavePath)
                     .done(function (response) { _hideErrorMessages(); })
@@ -115,6 +123,26 @@ define(function (require, exports, module) {
     /* Are we enabled or not? */
     function _bracketLessIsEnabled() {     
         return _selfEnabled;        
+    }
+    
+     /* Is ../css/ saving enabled or not? */
+    function _bracketLessDotDotSlashCSSIsEnabled() {     
+        return _dotDotSlashEnable;        
+    }
+    
+    /* Toggle BracketLESS ../css/ saving*/
+    function _handleEnableBracketLessDotDotSlash() {
+        
+        if(!_bracketLessDotDotSlashCSSIsEnabled()){
+            _dotDotSlashEnable = true;
+            CommandManager.get(BRACKETLESS_DOTDOTSLASH_ENABLED).setChecked(true);
+        } else {
+            _dotDotSlashEnable = false;
+            CommandManager.get(BRACKETLESS_DOTDOTSLASH_ENABLED).setChecked(false);
+        }
+        
+        _pStore.setValue("dotdotslash", _dotDotSlashEnable);
+        PreferencesManager.savePreferences();        
     }
     
     /* Toggle BracketLESS */
@@ -139,6 +167,14 @@ define(function (require, exports, module) {
 
     /* Turn ourself on if we've been turned on in another session */
     if(_pStore.getValue("enabled")) _handleEnableBracketLess();
+    
+    /* Add the menu ability to enable / disable ../css/ saving */
+    CommandManager.register("[BracketLESS] Save in ../css/", BRACKETLESS_DOTDOTSLASH_ENABLED, _handleEnableBracketLessDotDotSlash);
+    var menu = Menus.getMenu(Menus.AppMenuBar.VIEW_MENU);
+    menu.addMenuItem(BRACKETLESS_DOTDOTSLASH_ENABLED, "", Menus.AFTER, BRACKETLESS_ENABLED);
+
+    /* Turn ourself on if we've been turned on in another session */
+    if(_pStore.getValue("dotdotslash")) _handleEnableBracketLessDotDotSlash();
     
 
 });

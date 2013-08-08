@@ -156,8 +156,6 @@ define(function (require, exports, module) {
                 fileEntry = new NativeFileSystem.FileEntry(outputPath),
                 lineEnding = "\n";
             
-            console.log(">>>>>"+outputPath);
-
             if(FileUtils.getPlatformLineEndings() === "CRLF") lineEnding = "\r\n"
             
             if(love_insertion != undefined && LessParser.options.insertLoveMessage) code = love_insertion + lineEnding + code;
